@@ -85,42 +85,6 @@ export const load = async ({ locals }) => {
 			}
 
 			step = action
-
-			// sageGatherings.some(item => {
-			// 	if(item.telegramID.includes('verify')) {
-			// 		secretCode = telegramID?.split(':')[1]
-			// 		step = 'createGathering'
-			// 		return true
-			// 	}
-			// })
-
-			// if(!secretCode) {
-			// 	sageGatherings.some(item => {
-			// 		if(item.poolIndex < 0) {
-			// 			step = 'setupGathering'
-			// 			return true
-			// 		}
-			// 	})
-
-			// 	if(step !== 'setupGathering') {
-
-					// await locals.pb.collection('Gatherings').create({
-					// 	sage: dbID,
-					// 	telegramID: `verify:${genSecureRandom()}`,
-					// 	poolIndex: -1
-					// })
-
-			// 		step = 'createGathering'
-			// 	}
-			// }
-
-			// console.log(sageGatherings)
-			// const telegramID = 'asd'
-			// if(telegramID.includes('verify')) {
-
-			// } else {
-			// 	step = 'setupGathering'
-			// }
 		} catch(errorEmptyGatheringExists) {
 		}
 	}

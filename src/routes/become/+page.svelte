@@ -19,19 +19,6 @@
 		'createGathering': 3,
 		'setupGathering': 4
 	}
-// let deve
-
-
-// 	const openMetaMaskUrl = url => {
-// 		console.log(url)
-// 		const a = document.createElement('a')
-// 		a.href = url
-// 		a.target = '_self'
-// 		document.body.appendChild(a)
-// 		a.click()
-// 		a.remove()
-// 	}
-
 
 	onMount(() => {
 		$hideGradient = true
