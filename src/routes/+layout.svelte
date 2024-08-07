@@ -25,7 +25,6 @@
 		const { initDataUnsafe } = Telegram		
 		isValid = (await init(initDataUnsafe)).valid
 
-		console.log('T', Telegram)
 		platform.set(Telegram.platform)
 		theme.set(Telegram.colorScheme)
 

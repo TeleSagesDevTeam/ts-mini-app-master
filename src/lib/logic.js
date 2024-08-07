@@ -9,8 +9,6 @@ export const init = async initDataUnsafe => {
 		initData = new URLSearchParams(initDataUnsafe).toString()
 	}
 
-	// console.log({ initData })
-
 	try {
 		if(!initData) throw Error('invalid data')
 
