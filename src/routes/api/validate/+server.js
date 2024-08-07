@@ -72,7 +72,6 @@ export const POST = async ({ request, cookies }) => {
 				})
 			} catch(dbError) {
 				if(dbError.status !== 404) {
-					console.log('dbError', dbError)
 				} else {
 					const session = await encrypt(JSON.stringify({
 						...userData,
@@ -94,7 +93,6 @@ export const POST = async ({ request, cookies }) => {
 				}
 			}
 		} else {
-			console.log('!valid', userData)
 			cookies.delete('session', cookieOptions)
 			return json({ valid })
 		}

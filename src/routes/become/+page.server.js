@@ -43,7 +43,6 @@ export const load = async ({ locals }) => {
 					toProve: `${verifyWhat}=${verifyProof}`
 				})
 			} catch(dbToProveError) {
-				console.log(dbToProveError)
 				//TODO: report
 			}
 		}
@@ -123,7 +122,6 @@ export const load = async ({ locals }) => {
 			// 	step = 'setupGathering'
 			// }
 		} catch(errorEmptyGatheringExists) {
-			console.log({errorEmptyGatheringExists})
 		}
 	}
 
