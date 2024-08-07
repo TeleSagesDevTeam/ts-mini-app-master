@@ -29,7 +29,6 @@ export const actions = {
 		try {
 			sortType = await request.text()
 		} catch(formDataError) {
-			console.log({ formDataError }) //TODO
 			return {}
 		}
 
