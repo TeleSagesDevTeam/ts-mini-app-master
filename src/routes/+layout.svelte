@@ -1,72 +1,75 @@
 <script>
-	import '../app.pcss'
-	import { onMount } from 'svelte'
-	import { page } from '$app/stores'
-	import { init } from '$lib/logic'
-	import { platform, theme } from '$Stores/telegram.js'
-	import { hideGradient, hideBottomMenu } from '$Stores/state'
-	import { setupViewTransition } from 'sveltekit-view-transition'
+	import "../app.pcss";
+	import { onMount } from "svelte";
+	import { page } from "$app/stores";
+	import { init } from "$lib/logic";
+	import { platform, theme } from "$Stores/telegram.js";
+	import { hideGradient, hideBottomMenu } from "$Stores/state";
+	import { setupViewTransition } from "sveltekit-view-transition";
 
-	import BottomMenu from '$Menu/BottomMenu.svelte'
+	import BottomMenu from "$Menu/BottomMenu.svelte";
 
-	setupViewTransition()
+	setupViewTransition();
 
-	let isValid
-	let userData
-	let state = 'mounting'
-	let mounted
+	let isValid;
+	let userData;
+	let state = "mounting";
+	let mounted;
 
 	onMount(async () => {
-		state = 'beforeValidation'
+		state = "beforeValidation";
 
-		const Telegram = (await import('@twa-dev/sdk')).default
-		Telegram.ready()
-		
-		const { initDataUnsafe } = Telegram		
-		isValid = (await init(initDataUnsafe)).valid
+		const Telegram = (await import("@twa-dev/sdk")).default;
+		Telegram.ready();
 
-		platform.set(Telegram.platform)
-		theme.set(Telegram.colorScheme)
+		const { initDataUnsafe } = Telegram;
+		isValid = (await init(initDataUnsafe)).valid;
 
-		state = 'afterValidation'
-	})
+		// console.log("isValid:", isValid);
+		// console.log("Telegram:", Telegram);
+		platform.set(Telegram.platform);
+		theme.set(Telegram.colorScheme);
 
-	$: ({ route } = $page)
+		state = "afterValidation";
+	});
+
+	$: ({ route } = $page);
 </script>
 
 <main
 	class="relative max-h-screen min-h-[100dvh] h-[100dvh] mx-auto overflow-hidden"
-	class:dark={$theme === 'dark'}
+	class:dark={$theme === "dark"}
 >
 	<div class="space"></div>
 
 	{#key $page.url}
-		<div class="px-4 pb-6 max-h-[calc(100vh)] overflow-auto overflow-x-hidden relative">
+		<div
+			class="px-4 pb-6 max-h-[calc(100vh)] overflow-auto overflow-x-hidden relative"
+		>
 			<!-- <pre>{JSON.stringify(test, null, 2)}</pre> -->
 
-			{#if state === 'mounting'}
+			{#if state === "mounting"}
 				... mounting ...
 			{/if}
 
-			{#if state === 'beforeValidation'}
-				... mounted<br>
+			{#if state === "beforeValidation"}
+				... mounted<br />
 				starting validation...
 			{/if}
 
-			{#if state == 'afterValidation'}
-				{#if isValid }
+			{#if state == "afterValidation"}
+				{#if isValid}
 					<slot />
-					{#if route?.id !== '/become'}
+					{#if route?.id !== "/become"}
 						<div class="mt-20"></div>
 					{/if}
 				{:else}
-					oops something went wrong<br>
+					oops something went wrong<br />
 					app only available inside telegram
 				{/if}
 			{/if}
 		</div>
 	{/key}
-
 
 	{#if !$hideGradient}
 		<div
@@ -84,12 +87,12 @@
 	{/if}
 
 	<!-- {JSON.stringify($page, null, 2)} -->
-	{#if route?.id !== '/become' && !$hideBottomMenu}
+	{#if route?.id !== "/become" && !$hideBottomMenu}
 		<BottomMenu show={mounted} />
 	{/if}
 </main>
 
-<style lang=postcss>
+<style lang="postcss">
 	:global(body) {
 		background: #141414;
 		color: #fff;
