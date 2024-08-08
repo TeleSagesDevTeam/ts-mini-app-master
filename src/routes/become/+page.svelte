@@ -19,14 +19,28 @@
 		'createGathering': 3,
 		'setupGathering': 4
 	}
+// let deve
+
+
+// 	const openMetaMaskUrl = url => {
+// 		console.log(url)
+// 		const a = document.createElement('a')
+// 		a.href = url
+// 		a.target = '_self'
+// 		document.body.appendChild(a)
+// 		a.click()
+// 		a.remove()
+// 	}
 
 	onMount(() => {
 		$hideGradient = true
 	})
+	
 	onDestroy(() => {
 		$hideGradient = false
 	})
 
+	console.log(data);
 	$: ({ telegramUsername, ogGroupName, step, x, toProve } = data)
 </script>
 
@@ -36,7 +50,7 @@
 
 <div class="space"></div>
 {#if !telegramUsername}
-	You dont have telegram username setup, it is required to become a sage.<br>
+	You don't have telegram username setup, it is required to become a sage.<br>
 	Configure your telegram username and comeback once you're done.
 {:else}
 	{#if step === 'linkWallet'}
