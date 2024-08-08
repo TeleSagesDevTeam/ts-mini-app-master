@@ -47,6 +47,8 @@
 		if(res && res.status === 200) {
 			const parsed = parse(res.data)
 			gatherings = parsed.gatherings
+
+			console.log(gatherings, parsed)
 		}
 	}
 
@@ -62,6 +64,7 @@
 	})
 
 	$: ({ perPage, totalItems, gatherings } = data)
+	$: console.log({activeMenu, gatherings, openModal, $page})
 	
 </script>
 
