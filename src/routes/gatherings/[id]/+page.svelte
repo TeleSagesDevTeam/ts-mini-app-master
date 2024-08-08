@@ -1,7 +1,6 @@
 <script>
+	import { fly } from 'svelte/transition'
 	import { createEventDispatcher } from 'svelte'
-	import { slide } from 'svelte/transition'
-	import { circInOut } from 'svelte/easing'
 	import { platform, theme } from '$Stores/telegram.js'
 	import { createAnimationStore } from '$Stores/animation.js'
 	import { formatTime, getMetamaskLink } from '$lib/logic.js'
@@ -10,6 +9,7 @@
 	import { TradeGroup } from '$Gathering/'
 	import { StoreFrontIcon, HelpIcon, EditIcon, CartIcon, LockIcon, AccountIcon, KeyIcon } from '$Icons/'
 	import Button from '$lib/Components/Button.svelte'
+	import { goto } from '$app/navigation'
 
 	export let data
 
@@ -19,7 +19,8 @@
 
 	let activeTab = 'trade'
 
-	$: ({ ogGroupName, name, description, currentSupply, totalBuys, totalSells, price, supplyChange1H, volumeETH1H, timeSinceLastTrade, x, isMemberOf } = data)
+	$: ({ ogGroupName, name, description, currentSupply, totalBuys, totalSells, price, supplyChange1H, volumeETH1H, timeSinceLastTrade, x, isMemberOf, isWalletLinked } = data)
+	
 </script>
 
 <Menu class="mb-[30px]">
@@ -29,7 +30,7 @@
 		{send} {receive}
 	>
 		<StoreFrontIcon slot=icon />
-		Trade
+		Trade{price}
 	</MenuItem>
 	<MenuItem
 		active={activeTab === 'details'}
@@ -52,7 +53,7 @@
 <div class="space"></div>
 
 {#if activeTab === 'trade'}
-	<div transition:slide={{ easing: circInOut, duration: 169, delay: 0 }}>
+	<div in:fly={{ y: -10, duration: 369 }}>
 		
 		<div class="mb-16 space-y-3 px-1 relative z-10">
 			<TradeGroup icon={CartIcon} title="Buys / Sells" value={`<span style="color:#00c853">${totalBuys}</span> / <span style="color:#c80000">${totalSells}</span>`} />
@@ -70,7 +71,9 @@
 	
 		<!-- {/if} -->
 
-		<div class="relative z-10 flex flex-col items-center justify-center w-full text-center">
+		
+	</div>
+	<div class="relative z-10 flex flex-col items-center justify-center w-full text-center">
 			<h1 class="text-[32px] font-medium leading-none">
 				{price} <span class="text-[17px]">ETH</span>
 			</h1>
@@ -96,11 +99,17 @@
 						<span class="block font-bold">Sell</span>
 					</Button>
 				{/if}
-	
-				<Button other class="flex-1 text-base bg-[#00C853]/80 hover:bg-[#00C853]" link={getMetamaskLink($platform, 'buy', x)}>
-					<!-- {@html LocalMall} -->
-					<span class="block font-bold">Buy</span>
-				</Button>
+
+				{#if isWalletLinked}
+					<Button class="flex-1 text-base bg-[#00C853]/80 hover:bg-[#00C853]" link={getMetamaskLink(platform, 'buy', x)}>
+						<span class="block font-bold">Buy</span>
+					</Button>
+				{:else}
+					<Button other class="flex-1 text-base bg-[#00C853]/80 hover:bg-[#00C853]" on:click={() => goto('/become')}>
+						<!-- {@html LocalMall} -->
+						<span class="block font-bold">Buy</span>
+					</Button>
+				{/if}
 			</div>
 		</div>
 
@@ -110,9 +119,8 @@
 			alt=""
 			class="absolute bottom-0 -translate-x-1/2 left-1/2 w-full h-[200px]"
 		/>
-	</div>
 {:else if activeTab === 'details'}
-	<div transition:slide={{ easing: circInOut, duration: 169, delay: 0 }}>
+	<div in:fly={{ y: -10, duration: 369 }}>
 		<!-- style:overflow=auto style="height: calc(95vh - 2.5rem - 156px)" -->
 		<div class="flex flex-col items-center justify-center relative z-10">
 			<!-- <img src="/default_gathering_{Math.floor(Math.random()*3)+1}.webp" alt="" class="w-[60px] rounded-full" /> -->
@@ -163,7 +171,7 @@
 	<img
 		src="/bg.png"
 		alt=""
-		class="dark:bg-[#202224] absolute bottom-0 -translate-x-1/2 left-1/2 w-full h-[169px] z-0"
+		class="dark:bg-[#202224] absolute -bottom-[6px] -translate-x-1/2 left-1/2 w-full h-[169px] z-0"
 	/> 
 	<!-- 
 		<div class="relative flex flex-col items-center justify-center w-full ext-center">
@@ -178,7 +186,7 @@
 		class="absolute bottom-0 -translate-x-1/2 left-1/2 w-full h-[200px]"
 	/> -->
 {:else}
-	<div transition:slide={{ easing: circInOut, duration: 169, delay: 0 }}>
+	<div in:fly={{ y: -10, duration: 369 }}>
 		<h1 class="text-3xl p-6 text-center font-bold h-[300px]">SOON™</h1>
 	</div>
 {/if}
