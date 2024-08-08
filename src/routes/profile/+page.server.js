@@ -1,16 +1,18 @@
 /** @type {import('./$types').PageLoad} */
 export const load = async ({ locals }) => {
+	const { dbID, telegramID, telegramUsername } = locals.user
+	console.log("profile page:", dbID, telegramID, telegramUsername);
+
 	try {
-		const { dbID, telegramUsername } = locals.user
 		const { walletAddress } = await locals.pb.collection('Users').getOne(dbID)
 
 		const activeInvites = await locals.pb.collection('InvitationLinks').getFullList({
 			filter: `status != 'revoked' && userID = '${dbID}'`,
 			expand: 'gatheringID'
 		})
-		
+
 		const joined = activeInvites.reduce((acc, curr) => {
-			if(!acc.map.has(curr.gatheringID)) {
+			if (!acc.map.has(curr.gatheringID)) {
 				acc.map.set(curr.gatheringID, true)
 				acc.result.push(curr.expand.gatheringID)
 			}
@@ -28,9 +30,15 @@ export const load = async ({ locals }) => {
 			joined,
 			gatherings
 		}
-	} catch(err) {
-		console.error(err)
+	} catch (dbError) {
+		if (dbError.status !== 404) {
+			console.log('dbError', dbError)
+		} else {
+			return {
+				telegramUsername
+			}
+		}
 	}
-	
+
 
 }
