@@ -11,7 +11,7 @@
 </script>
 
 {#if link}
-	<a href={link} target=_blank
+	<a href={link}
 		{disabled} inert={disabled}
 		class:opacity-[0.2]={disabled}
 		class="font-semibold transition-all active:scale-[0.95] {muted
