@@ -4,6 +4,7 @@
 	import Icon from './Icon.svelte'
 	import Button from '../Button.svelte'
 	import { ArrowRightIcon } from '$Icons/'
+	import { goto } from '$app/navigation'
 
 	export let link
 	export let telegramUsername
@@ -37,7 +38,7 @@
 <Icon />
 
 <div class="fixed flex w-full pr-8 bottom-5">
-    <Button muted class="text-base bg-[#4E4E4E66] w-[111px]">
+    <Button muted class="text-base bg-[#4E4E4E66] w-[111px]" on:click={() => goto('/')}>
         Close
     </Button>
 
