@@ -21,37 +21,40 @@ export const POST = async ({ request, cookies }) => {
 		const toValidate = await request.text()
 		const parsed = new URLSearchParams(toValidate)
 
-		if(!parsed.has('hash')) {
+		// console.log("parsed:", parsed)
+		if (!parsed.has('hash')) {
 			return json({ error: 'wrong init data' })
 		}
-	
+
 		const hash = parsed.get('hash')
 		parsed.delete('hash')
 		const dataCheck = Array.from(parsed.keys())
 			.sort()
 			.map(key => `${key}=${parsed.get(key)}`)
 			.join('\n')
-	
+
 		const secretKey = createHmac('sha256', 'WebAppData').update(BOT_KEY).digest()
 		const calculatedHash = createHmac('sha256', secretKey).update(dataCheck).digest('hex')
 		valid = calculatedHash === hash
+
 		//TODO! session timeout
 
-		if(valid) {
+		if (valid) {
 			const { user: userStr } = Object.fromEntries(parsed.entries())
 			const user = JSON.parse(userStr)
 
 			delete user.language_code
 			delete user.allows_write_to_pm
-			
+
 			userData = {
 				telegramID: user.id,
 				telegramUsername: user.username,
 			}
+			// console.log(userData);
 
 			try {
-				const getUser = await pb.collection('Users').getFirstListItem(`telegramID="${user.id}"`)
-				const { id, isSage, xUsername, isWalletLinked, memberships, gatherings } = getUser
+				const getUser = await pb.collection('UserStats').getFirstListItem(`telegramID="${user.id}"`)
+				const { id, isSage, isWalletLinked, xUsername, memberships, gatherings } = getUser
 
 				userData = {
 					...userData,
@@ -62,6 +65,7 @@ export const POST = async ({ request, cookies }) => {
 					memberships,
 					gatherings
 				}
+
 				const session = await encrypt(JSON.stringify(userData))
 
 				cookies.set('session', session, cookieOptions)
@@ -70,8 +74,9 @@ export const POST = async ({ request, cookies }) => {
 					valid,
 					...userData
 				})
-			} catch(dbError) {
-				if(dbError.status !== 404) {
+			} catch (dbError) {
+				if (dbError.status !== 404) {
+					console.log('dbError', dbError)
 				} else {
 					const session = await encrypt(JSON.stringify({
 						...userData,
@@ -81,7 +86,7 @@ export const POST = async ({ request, cookies }) => {
 						gatherings: []
 					}))
 					cookies.set('session', session, cookieOptions)
-					
+
 					return json({
 						valid,
 						...userData,
@@ -93,11 +98,12 @@ export const POST = async ({ request, cookies }) => {
 				}
 			}
 		} else {
+			console.log('!valid', userData)
 			cookies.delete('session', cookieOptions)
 			return json({ valid })
 		}
 
-	} catch(validationError) {
+	} catch (validationError) {
 		return json({ error: 'invalid' })
 	}
 }
